@@ -1,0 +1,7 @@
+google
+google-api-python-client
+google-search
+bs4
+requests
+scrapy
+html5lib
