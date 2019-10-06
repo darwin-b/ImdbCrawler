@@ -24,31 +24,39 @@ def get_episodes_list(url):
     return episode_dict
 
 
-
-# get_imdb_tittle(url)
-
+# url1 = "https://www.imdb.com/search/title/?series=tt6473300&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
+# dic = get_episodes_list(url1)
+# for each in dic:
+#     print(dic[each])
 
 
 def get_episode_details(episode_url):
     page = requests.get(episode_url)
     soup = BeautifulSoup(page.text,'html5lib')
 
-    # Extracting Season & Episode Number    
-    refined_div = soup.find('div',class_="bp_heading")
-    episode_number = refined_div.get_text()
 
-    # Extracting StoryLine
-    refined_div = soup.find('div',class_="inline canwrap")
-    storyline = refined_div.get_text().strip()
+    try:
+        # Extracting Season & Episode Number    
+        refined_div = soup.find('div',class_="bp_heading")
+        episode_number = refined_div.get_text()
 
-    # Extracing Episode Rating
-    refined_div = soup.find('span', itemprop="ratingValue")
-    rating = refined_div.get_text()
-    refined_div2 = soup.find('span', itemprop="ratingCount")
-    rating = refined_div.get_text()+' |users - '+refined_div2.get_text()
+        # Extracting StoryLine
+        refined_div = soup.find('div',class_="inline canwrap")
+        # print(refined_div)
+        storyline = refined_div.get_text().strip()
 
+        # Extracing Episode Rating
+        refined_div = soup.find('span', itemprop="ratingValue")
+        rating = refined_div.get_text()
+        refined_div2 = soup.find('span', itemprop="ratingCount")
+        rating = refined_div.get_text()+' |users - '+refined_div2.get_text()
+    except:
+        storyline='Details Not Available'
+        rating='Not Applicable'
     return episode_number,storyline,rating
 
+# url = "https://www.imdb.com/title/tt10339542/?ref_=adv_li_tt"
+# get_episode_details(url)
 
  
 
