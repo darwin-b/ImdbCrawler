@@ -1,17 +1,11 @@
-import requests
-import scrapy
-import bs4
-import re
-import webbrowser
-from googlesearch import search
-
-from bs4 import BeautifulSoup
+from joblib import Parallel, delayed
+import multiprocessing
+import itertools
+import sys
 
 import g_search
 import Episode
 import crawl
-
-
 
 search_word = input("Enter your Search Word:   ")
 url_list = g_search.google_search(search_word)
@@ -28,23 +22,24 @@ for each in url.split("/"):
     if each[0]=='t' and each[1]=='t'and len(each)==9:
         title_number = each
 
+
 print("-------------------Please wait while we load data-----------------------")
 print("------------------------------------------------------------------------")
-top_ratedlist_url = "https://www.imdb.com/search/title/?series="+title_number+"&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
+
+try:
+    top_ratedlist_url = "https://www.imdb.com/search/title/?series="+title_number+"&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
+except:
+    print("Please select valid IMDB link for tv series")
+    sys.exit()
 # top_ratedlist_url="https://www.imdb.com/search/title/?series=tt2085059&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
 episodes_list = crawl.get_episodes_list(top_ratedlist_url)
 
-top_list = []
+# multiprocessing support
+num_cores = multiprocessing.cpu_count()
+top_list = Parallel(n_jobs=num_cores)(delayed(crawl.get_episode)(title) for title in episodes_list)
 
-for title in episodes_list:
-    imdb_title_number = title
-    episode_url = "https://www.imdb.com" + title
-    name = episodes_list[title]
-    number, storyline, rating  = crawl.get_episode_details(episode_url) 
-
-    episode_object = Episode.Episode(episode_url,name,number,rating,storyline,imdb_title_number)
-    
-    top_list.append(episode_object)
+for title,episode in zip(episodes_list,top_list):
+    episode.name = episodes_list[title]
 
 for episode in top_list:
     episode.show_details()
