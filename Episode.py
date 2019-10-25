@@ -19,4 +19,7 @@ class Episode:
         print('-------------------------------')
 
     def write_file(self):
-        print("incomplete")
+        print("Work in progress")
+
+    def write_div(self):
+        print("Work in progress")
