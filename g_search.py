@@ -1,4 +1,3 @@
-from googlesearch import search
 from googleapiclient.discovery import build
 import json
 
