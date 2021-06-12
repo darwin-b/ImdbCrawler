@@ -29,10 +29,13 @@ print("------------------------------------------------------------------------"
 try:
     top_ratedlist_url = "https://www.imdb.com/search/title/?series="+title_number+"&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
 except:
-    print("Please select valid IMDB link for tv series")
+    print("selected ivalid IMDB link for tv series")
     sys.exit()
 # top_ratedlist_url="https://www.imdb.com/search/title/?series=tt2085059&view=simple&count=250&sort=user_rating,desc&ref_=tt_eps_rhs_sm"
 episodes_list = crawl.get_episodes_list(top_ratedlist_url)
+
+
+# print(episodes_list)
 
 # multiprocessing support
 num_cores = multiprocessing.cpu_count()
@@ -41,9 +44,11 @@ top_list = Parallel(n_jobs=num_cores)(delayed(crawl.get_episode)(title) for titl
 for title,episode in zip(episodes_list,top_list):
     episode.name = episodes_list[title]
 
+top_list.reverse()
 for episode in top_list:
     episode.show_details()
 
+print("================================================")
 
 
 
