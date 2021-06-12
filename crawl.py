@@ -34,21 +34,26 @@ def get_episode(title):
 
     page = requests.get(episode_url)
     soup = BeautifulSoup(page.text,'html5lib')
+    episode_number = ""
     try:
         # Extracting Season & Episode Number    
-        refined_div = soup.find('div',class_="bp_heading")
-        episode_number = refined_div.get_text()
+        refined_div = soup.findAll('span',class_="EpisodeNavigationForTVEpisode__SeasonEpisodeNumbersItem-sc-1m5a7nm-2 ejoFbo")
+        # print(refined_div)
+        episode_number = refined_div[0].get_text()
+        episode_number = episode_number+ " "+refined_div[1].get_text()
+        # print(episode_number)
+        
 
         # Extracting StoryLine
-        refined_div = soup.find('div',class_="inline canwrap")
+        refined_div = soup.find('span',class_="GenresAndPlot__TextContainerBreakpointXL-cum89p-4 liTOue")
         # print(refined_div)
         storyline = refined_div.get_text().strip()
 
         # Extracing Episode Rating
-        refined_div = soup.find('span', itemprop="ratingValue")
+        refined_div = soup.find('span', class_="AggregateRatingButton__RatingScore-sc-1il8omz-1 fhMjqK")
         rating = refined_div.get_text()
-        refined_div2 = soup.find('span', itemprop="ratingCount")
-        rating = refined_div.get_text()+' |users - '+refined_div2.get_text()
+        # refined_div2 = soup.find('span', itemprop="ratingCount")
+        # rating = refined_div.get_text()+' |users - '+refined_div2.get_text()
         # print("----------------\n")
         # print(episode_url,name,episode_number,rating,storyline,imdb_title_number)
         # print("----------------\n")
