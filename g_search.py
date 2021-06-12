@@ -15,17 +15,20 @@ url_list =[]
 def google_search(search_term, **kwargs):
     service = build("customsearch", "v1", developerKey=my_api_key)
     result = service.cse().list(q=search_term, cx=my_cse_id, **kwargs).execute()
-    i=0
-    for item in result['items']:
+
+    results_list = [search_result for search_result in result['items']]
+    print(results_list)
+    results_list.reverse()
+    for index,item in enumerate(results_list) :
         title = item["title"]    
         snippet = item["snippet"]
         url = item["htmlFormattedUrl"]
-        i=i+1
         print("---------------------------------------------")
-        print(str(i)+".  "+title)
+        print(str(10-index)+".  "+title)
         print(snippet)
         print(url)
         url_list.append(url)
+    url_list.reverse()
     return url_list
 
 
