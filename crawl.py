@@ -31,29 +31,32 @@ def get_episode(title):
     imdb_title_number = title
     episode_url = "https://www.imdb.com" + title
     name = ''
-
+    
+    episode_number = None
     page = requests.get(episode_url)
     soup = BeautifulSoup(page.text,'html5lib')
-    episode_number = ""
     try:
         # Extracting Season & Episode Number    
-        refined_div = soup.findAll('span',class_="EpisodeNavigationForTVEpisode__SeasonEpisodeNumbersItem-sc-1m5a7nm-2 ejoFbo")
-        # print(refined_div)
-        episode_number = refined_div[0].get_text()
-        episode_number = episode_number+ " "+refined_div[1].get_text()
-        # print(episode_number)
-        
+        refined_div = soup.find('div',class_="EpisodeNavigationForEpisode__SeasonEpisodeNumbersSmallBreakpoint-sc-bji0pk-0 jdVlXz")
+        episode_number = refined_div.get_text()
+
+        # Extracting Episode name - is extracted from episodes list from top rated url list
+        # refined_div = soup.find('div',class_="TitleBlock__SeriesParentLinkWrapper-sc-1nlhx7j-3 itQvtY")
+        # name = refined_div.get_text()
 
         # Extracting StoryLine
-        refined_div = soup.find('span',class_="GenresAndPlot__TextContainerBreakpointXL-cum89p-4 liTOue")
-        # print(refined_div)
+        refined_div = soup.find('div',class_="ipc-html-content ipc-html-content--base")
         storyline = refined_div.get_text().strip()
 
+        # Template to search a div
+        # refined_div = soup.find('div',class_="#div_class_name")
+        # div = refined_div.get_text()
+
         # Extracing Episode Rating
-        refined_div = soup.find('span', class_="AggregateRatingButton__RatingScore-sc-1il8omz-1 fhMjqK")
-        rating = refined_div.get_text()
-        # refined_div2 = soup.find('span', itemprop="ratingCount")
-        # rating = refined_div.get_text()+' |users - '+refined_div2.get_text()
+        rating_div = soup.find('div',class_="AggregateRatingButton__ContentWrap-sc-1ll29m0-0 hmJkIS").get_text()
+        rating,rating_count = rating_div.split("/10")
+        rating = rating + ' |users - ' +rating_count
+
         # print("----------------\n")
         # print(episode_url,name,episode_number,rating,storyline,imdb_title_number)
         # print("----------------\n")
