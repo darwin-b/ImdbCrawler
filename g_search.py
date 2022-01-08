@@ -17,7 +17,7 @@ def google_search(search_term, **kwargs):
     result = service.cse().list(q=search_term, cx=my_cse_id, **kwargs).execute()
 
     results_list = [search_result for search_result in result['items']]
-    print(results_list)
+    # print(results_list)
     results_list.reverse()
     for index,item in enumerate(results_list) :
         title = item["title"]    
